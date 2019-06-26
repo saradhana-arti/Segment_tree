@@ -1,0 +1,83 @@
+#include<bits/stdc++.h>
+using namespace std;
+int  s[100000], lazy[100000];
+int   getsum(int l ,int r,int n , int m , int si)
+{
+	if(l<=n && r>=m)
+	{
+		return s[si];
+	}
+	else if(r<n || l>m)
+		return 0;
+	else 
+	{
+		int mid=(n+m)/2;
+		return getsum(l,r,n,mid,2*si+1)+getsum(l,r,mid+1,m,2*si+2);
+	}
+}
+void update(int l , int r , int i, int j ,int si)
+{
+	if(i>j)
+		return ;
+	if(lazy[si]!=0)
+	{
+		s[si]=(j-i+1)-s[si];
+		if(i!=j)
+		{
+			lazy[2*si+1]=lazy[si];
+			lazy[2*si+2]=lazy[si];
+		}
+		lazy[si]=0;
+	}
+	if(l>j || r<i)
+	{
+		return ;
+	}
+	if(l<=i && r>=j)
+	{
+		s[si]=(j-i+1)-s[si];
+		if(i!=j)
+		{
+			lazy[2*si+1]=lazy[si];
+			lazy[2*si+2]=lazy[si];
+		}
+		
+	}
+		if(i!=j)
+			
+			{
+				int mid=(i+j)/2;
+				update(l,r, i,mid,2*si+1 );
+				update(l,r , mid+1,j,2*si+2);
+				s[si]=s[si*2+1]+s[si*2+2];
+			}
+}
+int main()
+{
+	int n , m , i , j , k,x, l , y;
+	cin>>n>>m;
+	if(n%2)
+	{
+		int g=sqrt(n);
+		l=pow(2,g+1);
+	}
+	else 
+		l=2*n-1;
+	for(i=0 ; i<l ;i++)
+	{
+		cout<<s[i];
+	}
+	cout<<endl;
+	while(m--)
+	{
+		cin>>k>>x>>y;
+		if(k==0)
+		{
+			update(x,y,0,n-1,0);
+		}
+		else
+		{
+			cout<<getsum(x,y,0,n-1,0)<<endl;
+		}
+	}
+}
